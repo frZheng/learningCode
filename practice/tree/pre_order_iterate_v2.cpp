@@ -2,7 +2,6 @@
 #include <vector>
 #include <iostream>
 #include <stack>
-#include <queue>
 using namespace std;
 
 
@@ -16,22 +15,26 @@ struct TreeNode{
 
 class Solution {
     public:
-        vector<int> rightSideView(TreeNode* root) {
-            queue<TreeNode *> que;
-            if (root != NULL)
-                que.push(root);
+        vector<int> preOrderTraversal(TreeNode* root) {
             vector<int> result;
-            while (!que.empty()) {
-                int size = que.size();
-                for (int i = 0; i < size; i++) {
-                    TreeNode *node = que.front();
-                    que.pop();
-                    if (i == size - 1)
-                        result.push_back(node->val);
-                    if (node->left)
-                        que.push(node->left);
+            stack<TreeNode*> st;
+            if(root != NULL)
+                st.push(root);
+            while(!st.empty()) {
+                TreeNode* node = st.top();
+                if (node != NULL) {
+                    st.pop();
                     if (node->right)
-                        que.push(node->right);
+                        st.push(node->right);
+                    if (node->left)
+                        st.push(node->left);
+                    st.push(node);
+                    st.push(NULL);    
+                } else {
+                    st.pop();
+                    node = st.top();
+                    st.pop();
+                    result.push_back(node->val);
                 }
             }
             return result;
@@ -54,7 +57,7 @@ int main()
     root->right->right = new TreeNode(7);
 
     Solution sl;
-	result = sl.rightSideView(root);
+	result = sl.preOrderTraversal(root);
     for (unsigned int i = 0; i < result.size(); i++)
     {
         cout << "输出字符串:\t" << result[i] << endl;

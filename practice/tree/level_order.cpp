@@ -1,7 +1,6 @@
 #include <string.h>
 #include <vector>
 #include <iostream>
-#include <stack>
 #include <queue>
 using namespace std;
 
@@ -16,24 +15,24 @@ struct TreeNode{
 
 class Solution {
     public:
-        vector<int> largestValues(TreeNode* root) {
+        vector<vector<int> > levelOrder(TreeNode* root) {
             queue<TreeNode *> que;
+            vector<vector<int> > result;
             if (root != NULL)
                 que.push(root);
-            vector<int> result;
-            while (!que.empty()) {
+            while(!que.empty()) {
                 int size = que.size();
-                int maxValue = INT_MIN;
+                vector<int> vec;
                 for (int i = 0; i < size; i++) {
                     TreeNode *node = que.front();
                     que.pop();
-                    maxValue = node->val > maxValue ? node->val : maxValue;
+                    vec.push_back(node->val);
                     if (node->left)
                         que.push(node->left);
                     if (node->right)
                         que.push(node->right);
                 }
-                result.push_back(maxValue);
+                result.push_back(vec);
             }
             return result;
         }
@@ -41,11 +40,33 @@ class Solution {
 
 
 
+void reverse_with_iterator(vector<vector<int> > vec)
+{
+    if (vec.empty())
+    {
+        cout << "The vector is empty!" << endl;
+        return;
+    }
+ 
+    vector<int>::iterator it;
+    vector<vector<int> >::iterator iter;
+    vector<int> vec_tmp;
+ 
+    cout << "Use iterator : " << endl;
+    for(iter = vec.begin(); iter != vec.end(); iter++)
+    {
+        vec_tmp = *iter;
+        for(it = vec_tmp.begin(); it != vec_tmp.end(); it++)
+            cout << *it << " ";
+        cout << endl;
+    }
+}
+
 int main()
 {
 
     TreeNode* root = new TreeNode(1);
-    vector<int> result;
+    vector<vector<int> > result;
     // root->val = 1;
     root->left = new TreeNode(2);
     root->right = new TreeNode(5);
@@ -55,11 +76,9 @@ int main()
     root->right->right = new TreeNode(7);
 
     Solution sl;
-	result = sl.largestValues(root);
-    for (unsigned int i = 0; i < result.size(); i++)
-    {
-        cout << "输出字符串:\t" << result[i] << endl;
-    }
+	result = sl.levelOrder(root);
 
+    reverse_with_iterator(result);
     return 0;
+    
 }

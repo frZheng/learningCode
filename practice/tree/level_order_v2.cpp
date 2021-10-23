@@ -1,8 +1,8 @@
 #include <string.h>
 #include <vector>
 #include <iostream>
-#include <stack>
 #include <queue>
+#include <algorithm> // reverse的包
 using namespace std;
 
 
@@ -16,36 +16,59 @@ struct TreeNode{
 
 class Solution {
     public:
-        vector<double> averageOfLevel(TreeNode* root) {
+        vector<vector<int> > levelOrder(TreeNode* root) {
             queue<TreeNode *> que;
+            vector<vector<int> > result;
             if (root != NULL)
                 que.push(root);
-            vector<double> result;
-            while (!que.empty()) {
+            while(!que.empty()) {
                 int size = que.size();
-                double sum = 0;
+                vector<int> vec;
                 for (int i = 0; i < size; i++) {
                     TreeNode *node = que.front();
                     que.pop();
-                    sum += node->val;
+                    vec.push_back(node->val);
                     if (node->left)
                         que.push(node->left);
                     if (node->right)
                         que.push(node->right);
                 }
-                result.push_back(sum / size);
+                result.push_back(vec);
             }
+            reverse(result.begin(), result.end());
             return result;
         }
 };
 
 
 
+void reverse_with_iterator(vector<vector<int> > vec)
+{
+    if (vec.empty())
+    {
+        cout << "The vector is empty!" << endl;
+        return;
+    }
+ 
+    vector<int>::iterator it;
+    vector<vector<int> >::iterator iter;
+    vector<int> vec_tmp;
+ 
+    cout << "Use iterator : " << endl;
+    for(iter = vec.begin(); iter != vec.end(); iter++)
+    {
+        vec_tmp = *iter;
+        for(it = vec_tmp.begin(); it != vec_tmp.end(); it++)
+            cout << *it << " ";
+        cout << endl;
+    }
+}
+
 int main()
 {
 
     TreeNode* root = new TreeNode(1);
-    vector<double> result;
+    vector<vector<int> > result;
     // root->val = 1;
     root->left = new TreeNode(2);
     root->right = new TreeNode(5);
@@ -55,11 +78,9 @@ int main()
     root->right->right = new TreeNode(7);
 
     Solution sl;
-	result = sl.averageOfLevel(root);
-    for (unsigned int i = 0; i < result.size(); i++)
-    {
-        cout << "输出字符串:\t" << result[i] << endl;
-    }
+	result = sl.levelOrder(root);
 
+    reverse_with_iterator(result);
     return 0;
+    
 }
